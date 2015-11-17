@@ -1,6 +1,6 @@
 ﻿/*
  * Integration in ArcMap for Cycloramas
- * Copyright (c) 2014, CycloMedia, All rights reserved.
+ * Copyright (c) 2015, CycloMedia, All rights reserved.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,32 +18,22 @@
 
 namespace IntegrationArcMap.Client
 {
-  class Urls
+  public class StoredLayer
   {
-    /// <summary>
-    /// This file contains default URLs
-    /// </summary>
-
     #region properties
 
     // =========================================================================
     // Properties
     // =========================================================================
     /// <summary>
-    /// The base url
+    /// Name
     /// </summary>
-    public static string BaseUrl = "https://atlas.cyclomedia.com";
+    public string Name { get; set; }
 
     /// <summary>
-    /// The recording service url
+    /// Visible
     /// </summary>
-    public static string RecordingsServiceUrl = "https://atlas.cyclomedia.com/recordings/wfs";
-
-    /// <summary>
-    /// The spatialreferences url
-    /// </summary>
-    public static string SpatialReferencesUrl =
-      "https://globespotter.cyclomedia.com/v31/api/config/srs/globespotterspatialreferences.xml";
+    public bool Visible { get; set; }
 
     #endregion
   }

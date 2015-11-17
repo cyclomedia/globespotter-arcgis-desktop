@@ -129,7 +129,8 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\..\Libs\ArcGIS10.0\ESRI.ArcGIS.TrackingAnalyst.dll</HintPath>
     </Reference>
-    <Reference Include="GlobeSpotterAPI">
+    <Reference Include="GlobeSpotterAPI, Version=3.1.0.5775, Culture=neutral, PublicKeyToken=40e543d64118bdd4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libs\GlobeSpotterAPI2.85\GlobeSpotterAPI.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
@@ -147,6 +148,7 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddIns\GsCycloramaSearch.cs" />
     <Compile Include="AddIns\GsFrmIdentify.cs" />
     <Compile Include="AddIns\GsHelp.cs" />
     <Compile Include="AddIns\GsMeasurementDetail.cs" />
@@ -161,6 +163,8 @@
     <Compile Include="Client\Functionality.cs" />
     <Compile Include="Client\GlobeSpotterConfiguration.cs" />
     <Compile Include="Client\LogClient.cs" />
+    <Compile Include="Client\StoredLayer.cs" />
+    <Compile Include="Client\StoredLayers.cs" />
     <Compile Include="Client\Urls.cs" />
     <Compile Include="Forms\FrmAgreement.cs">
       <SubType>Form</SubType>
@@ -170,6 +174,12 @@
     </Compile>
     <Compile Include="Client\SpatialReference.cs" />
     <Compile Include="Client\SpatialReferences.cs" />
+    <Compile Include="Forms\FrmCycloramaSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmCycloramaSearch.Designer.cs">
+      <DependentUpon>FrmCycloramaSearch.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmIdentify.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -283,6 +293,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Forms\FrmAgreement.resx">
       <DependentUpon>FrmAgreement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmCycloramaSearch.resx">
+      <DependentUpon>FrmCycloramaSearch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmIdentify.resx">
       <DependentUpon>FrmIdentify.cs</DependentUpon>
