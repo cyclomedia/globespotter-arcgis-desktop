@@ -107,6 +107,8 @@ namespace IntegrationArcMap.Layers
     private static ICommandItem _beforeTool;
     private static readonly LogClient LogClient;
     private static readonly object LockObject;
+    private static bool _doSelection;
+    private static Timer _nextSelectionTimer;
 
     private IFeatureClass _featureClass;
     private ILayer _layer;
@@ -127,6 +129,7 @@ namespace IntegrationArcMap.Layers
       _beforeTool = null;
       LogClient = new LogClient(typeof(VectorLayer));
       LockObject = new object();
+      _doSelection = true;
     }
 
     #endregion
@@ -806,6 +809,10 @@ namespace IntegrationArcMap.Layers
     {
       try
       {
+        IApplication application = ArcMap.Application;
+        ICommandItem tool = application.CurrentTool;
+        string name = tool.Name;
+
         IEditor3 editor = ArcUtils.Editor;
         LogClient.Info("On Selection Changed");
 
@@ -828,6 +835,7 @@ namespace IntegrationArcMap.Layers
             {
               var geometries = new List<IGeometry>();
               editSelection.Reset();
+              bool isPointLayer = false;
 
               while ((feature = editSelection.Next()) != null)
               {
@@ -836,11 +844,27 @@ namespace IntegrationArcMap.Layers
                 if ((vectorLayer != null) && (vectorLayer.IsVisibleInGlobespotter))
                 {
                   geometries.Add(feature.Shape);
+                  isPointLayer = isPointLayer || (Measurement.GetTypeOfLayer(feature.Shape) == TypeOfLayer.Point);
                 }
               }
 
-              FeatureStartEditEvent(geometries);
-              AvContentChanged();
+              if ((_doSelection && (name != "Query_SelectFeatures")) || (!isPointLayer))
+              {
+                FeatureStartEditEvent(geometries);
+                AvContentChanged();
+
+                _doSelection = false;
+
+                if (_nextSelectionTimer == null)
+                {
+                  var checkEvent = new AutoResetEvent(true);
+                  const int timeOutTime = 1500;
+
+                  var checkTimerCallBack = new TimerCallback(CheckTimerCallBack);
+
+                  _nextSelectionTimer = new Timer(checkTimerCallBack, checkEvent, timeOutTime, -1);
+                }
+              }
             }
           }
         }
@@ -850,6 +874,12 @@ namespace IntegrationArcMap.Layers
         LogClient.Error("VectorLayer.OnSelectionChanged", ex.Message, ex);
         Trace.WriteLine(ex.Message, "VectorLayer.OnSelectionChanged");
       }
+    }
+
+    private static void CheckTimerCallBack(object state)
+    {
+      _doSelection = true;
+      _nextSelectionTimer = null;
     }
 
     private static void OnDeleteFeature(IObject obj)
@@ -888,6 +918,7 @@ namespace IntegrationArcMap.Layers
       {
         LogClient.Info(string.Format("On Stop Editing: {0}", save));
         EditFeatures.Clear();
+        _doSelection = true;
 
         if (StopEditEvent != null)
         {
@@ -913,6 +944,7 @@ namespace IntegrationArcMap.Layers
       try
       {
         LogClient.Info("On Sketch Modified");
+        _doSelection = true;
 
         if (_editToolCheckTimer == null)
         {
@@ -977,6 +1009,7 @@ namespace IntegrationArcMap.Layers
       {
         IEditor3 editor = ArcUtils.Editor;
         LogClient.Info("On Sketch Finished");
+        _doSelection = true;
 
         if (editor != null)
         {
@@ -1013,6 +1046,7 @@ namespace IntegrationArcMap.Layers
       {
         IEditor3 editor = ArcUtils.Editor;
         LogClient.Info("On CurrentTask Changed");
+        _doSelection = true;
 
         if (editor != null)
         {
@@ -1115,6 +1149,7 @@ namespace IntegrationArcMap.Layers
       {
         IEditor3 editor = ArcUtils.Editor;
         LogClient.Info("On vertex selection Changed");
+        _doSelection = true;
 
         if (editor != null)
         {
