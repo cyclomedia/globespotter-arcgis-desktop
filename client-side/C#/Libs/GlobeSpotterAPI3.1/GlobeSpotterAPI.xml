@@ -23,6 +23,11 @@
             <seealso cref="T:GlobeSpotterAPI.WarningSeverity"/>
             <param name="handler">The class that will handle serious warnings.</param>
         </member>
+        <member name="P:GlobeSpotterAPI.API.gui">
+            <summary>
+            A GUI-element that can be added to a window or element thereof (wraps the GlobeSpotter-object).
+            </summary>
+        </member>
         <member name="M:GlobeSpotterAPI.API.#ctor(GlobeSpotterAPI.InitType)">
             <summary>
             Initialize the Basic API. (Default names are used.)
@@ -610,6 +615,40 @@
             Sets window active based on viewerID. This can be used to switch between several cyclorama windows. 
             </summary>
             <param name="viewerID">The id of the viewer.</param>
+            <returns></returns>
+            <exception cref="T:GlobeSpotterAPI.GlobeSpotterAPIException">In most cases indicates that the arguments where inapliccable.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown when the API was not ready.</exception>
+        </member>
+        <member name="M:GlobeSpotterAPI.API.GetMultiWindowCount">
+            <summary>
+            Returns the multi window count, this value is used by the ctrl-click
+            </summary>
+            <returns>Multi window count value</returns>
+            <exception cref="T:GlobeSpotterAPI.GlobeSpotterAPIException">most cases indicates that the arguments where inapliccable.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown when the API was not ready.</exception>
+        </member>
+        <member name="M:GlobeSpotterAPI.API.SetMultiWindowCount(System.UInt32)">
+            <summary>
+            Sets the multi window count, this value is used by the ctrl-click
+            </summary>
+            <param name="multiWindowCount">The number of viewers open with ctrl-click.</param>
+            <returns></returns>
+            <exception cref="T:GlobeSpotterAPI.GlobeSpotterAPIException">In most cases indicates that the arguments where inapliccable.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown when the API was not ready.</exception>
+        </member>
+        <member name="M:GlobeSpotterAPI.API.GetWindowSpread">
+            <summary>
+            Returns the window spread, this value is used by the ctrl-click
+            </summary>
+            <returns>Multi window spread value</returns>
+            <exception cref="T:GlobeSpotterAPI.GlobeSpotterAPIException">most cases indicates that the arguments where inapliccable.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown when the API was not ready.</exception>
+        </member>
+        <member name="M:GlobeSpotterAPI.API.SetWindowSpread(System.UInt32)">
+            <summary>
+            Sets the window spread, this value is used by the ctrl-click
+            </summary>
+            <param name="windowSpread">The window spread of viewers open with ctrl-click.</param>
             <returns></returns>
             <exception cref="T:GlobeSpotterAPI.GlobeSpotterAPIException">In most cases indicates that the arguments where inapliccable.</exception>
             <exception cref="T:System.InvalidOperationException">Thrown when the API was not ready.</exception>
@@ -2108,15 +2147,27 @@
             <returns>nothing</returns>
             <seealso cref="M:GlobeSpotterAPI.API.RemoveLayer(System.UInt32)"/>
         </member>
+        <member name="M:GlobeSpotterAPI.API.SetBaseLayerTMS(System.String,System.UInt32,System.String,GlobeSpotterAPI.TMSLayer,System.Boolean)">
+            <summary>
+            Sets the baselayer of a map
+            </summary>
+            <param name="name">Name of this layer (may be anything).</param>
+            <param name="type">Layer type. Should be 4 for TMS</param>
+            <param name="srsName">The name(s) of the layer(s) to be retrieved.</param>
+            <param name="TMSLayer">TMS layer object</param>
+            <param name="useProxy">Wether to use CycloMedia proxy or not</param>
+            <returns>nothing</returns>
+            <seealso cref="M:GlobeSpotterAPI.API.RemoveLayer(System.UInt32)"/>
+        </member>
         <member name="M:GlobeSpotterAPI.API.SetBaseLayerWMS(System.String,System.UInt32,System.String,GlobeSpotterAPI.WMSLayer,System.Boolean)">
             <summary>
             Sets the baselayer of a map
             </summary>
             <param name="name">Name of this layer (may be anything).</param>
-            <param name="type">URL of the WMS-service.</param>
+            <param name="type">Type of layer. Should be 1 for WMS</param>
             <param name="srsName">The name(s) of the layer(s) to be retrieved.</param>
-            <param name="layer">Supported WMS version.</param>
-            <param name="useProxy">Wether the layer needs to be transparent or not.</param>
+            <param name="WMSLayer">WMS layer object.</param>
+            <param name="useProxy">Wether to use CycloMedia proxy or not.</param>
             <returns>nothing</returns>
             <seealso cref="M:GlobeSpotterAPI.API.RemoveLayer(System.UInt32)"/>
         </member>
@@ -2773,11 +2824,6 @@
             </summary>        
             <returns></returns>
         </member>
-        <member name="P:GlobeSpotterAPI.API.gui">
-            <summary>
-            A GUI-element that can be added to a window or element thereof (wraps the GlobeSpotter-object).
-            </summary>
-        </member>
         <member name="T:GlobeSpotterAPI.IAPIClient">
             <summary>
             API clients need to implement this (or AbstractAPIClient, which inherits from this).
@@ -2820,13 +2866,14 @@
             <param name="opened">True if an image has been opened</param>
             <param name="imageId">The imageId that has been opened</param>
         </member>
-        <member name="M:GlobeSpotterAPI.IAPIClient.OnOpenNearestImageResult(System.String,System.Boolean,System.String)">
+        <member name="M:GlobeSpotterAPI.IAPIClient.OnOpenNearestImageResult(System.String,System.Boolean,System.String,GlobeSpotterAPI.Point3D)">
             <summary>
             Indicates to the host the result of an open image call.
             </summary>
             <param name="input">The input of the original request.</param>
             <param name="opened">True if an image has been opened</param>
             <param name="imageId">The imageId that has been opened</param>
+            <param name="position">The position that has been opened</param>
         </member>
         <member name="M:GlobeSpotterAPI.IAPIClient.OnImageChanged(System.UInt32)">
             <summary>
@@ -2869,6 +2916,13 @@
             Indicates to the host that all image parts of the current view have been completely loaded. 
             </summary>
             <param name="viewerID">The id of the viewer that loaded its entire view.</param>
+        </member>
+        <member name="M:GlobeSpotterAPI.IAPIClient.OnImageDistanceSliderChanged(System.UInt32,System.Double)">
+            <summary>
+            Indicates to the host that the vector layer distance slider is changed.
+            </summary>
+            <param name="viewerId">The id of the viewer that loaded its entire view.</param>
+            <param name="distance">the new distance to the vector layer value.</param>
         </member>
         <member name="M:GlobeSpotterAPI.IAPIClient.OnViewChanged(System.UInt32,System.Double,System.Double,System.Double)">
             <summary>
@@ -2948,11 +3002,10 @@
             </summary>
             <param name="viewerID">The ID of the viewer.</param>
         </member>
-        <member name="M:GlobeSpotterAPI.IAPIClient.OnMaxViewers(System.UInt32)">
+        <member name="M:GlobeSpotterAPI.IAPIClient.OnMaxViewers">
             <summary>
             Indicates to the host that the max amount of viewers has been reached
             </summary>
-            <param name="maxViewers">The ID of the viewer.</param>
         </member>
         <member name="M:GlobeSpotterAPI.IAPIClient.OnMeasurementCreated(System.Int32,System.String)">
             <summary>
@@ -3196,6 +3249,11 @@
             . <see cref="M:GlobeSpotterAPI.IAPIClient.OnViewClicked(System.UInt32,System.Double[])"/>
             </summary>
         </member>
+        <member name="M:GlobeSpotterAPI.AbstractAPIClient.OnImageDistanceSliderChanged(System.UInt32,System.Double)">
+            <summary>
+            . <see cref="M:GlobeSpotterAPI.IAPIClient.OnImageDistanceSliderChanged(System.UInt32,System.Double)"/>
+            </summary>
+        </member>
         <member name="M:GlobeSpotterAPI.AbstractAPIClient.OnMarkerClicked(System.UInt32,System.UInt32,System.Double[])">
             <summary>
             . <see cref="M:GlobeSpotterAPI.IAPIClient.OnMarkerClicked(System.UInt32,System.UInt32,System.Double[])"/>
@@ -3320,10 +3378,9 @@
             <param name="pointID"></param>
             <param name="imageID"></param>
         </member>
-        <member name="M:GlobeSpotterAPI.AbstractAPIClient.OnMaxViewers(System.UInt32)">
+        <member name="M:GlobeSpotterAPI.AbstractAPIClient.OnMaxViewers">
             <summary>
             </summary>
-            <param name="maxViewers"></param>
         </member>
         <member name="M:GlobeSpotterAPI.AbstractAPIClient.OnMapExtentChanged(GlobeSpotterAPI.MapExtent,GlobeSpotterAPI.Point2D,System.UInt32)">
             <summary>
@@ -3351,11 +3408,18 @@
             <summary>
             
             </summary>
+            <param name="input"></param>
+            <param name="opened"></param>
+            <param name="imageId"></param>
         </member>
-        <member name="M:GlobeSpotterAPI.AbstractAPIClient.OnOpenNearestImageResult(System.String,System.Boolean,System.String)">
+        <member name="M:GlobeSpotterAPI.AbstractAPIClient.OnOpenNearestImageResult(System.String,System.Boolean,System.String,GlobeSpotterAPI.Point3D)">
             <summary>
             
             </summary>
+            <param name="input"></param>
+            <param name="opened"></param>
+            <param name="imageId"></param>
+            <param name="position"></param>
         </member>
         <member name="M:GlobeSpotterAPI.AbstractAPIClient.OnImageFailed(System.UInt32)">
             <summary>
@@ -3620,17 +3684,6 @@
             Represents the map extent as left,bottom,right,top
             </summary>
         </member>
-        <member name="M:GlobeSpotterAPI.MapExtent.#ctor(System.Double,System.Double,System.Double,System.Double)">
-            <summary>
-            Contructor
-            </summary>
-        </member>
-        <member name="M:GlobeSpotterAPI.MapExtent.ToXMLString">
-            <summary>
-            Creates an XML-repressentation of this object.
-            </summary>
-            <returns>XML-string</returns>
-        </member>
         <member name="P:GlobeSpotterAPI.MapExtent.left">
             <summary>
             xmin
@@ -3650,6 +3703,17 @@
             <summary>
             ymax
             </summary>
+        </member>
+        <member name="M:GlobeSpotterAPI.MapExtent.#ctor(System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Contructor
+            </summary>
+        </member>
+        <member name="M:GlobeSpotterAPI.MapExtent.ToXMLString">
+            <summary>
+            Creates an XML-repressentation of this object.
+            </summary>
+            <returns>XML-string</returns>
         </member>
         <member name="T:GlobeSpotterAPI.RecordingLocation">
             <summary>
@@ -3722,6 +3786,31 @@
             ISO 8601 DateTime string, and/or ISO 8601 DateTime string.
             </summary>
         </member>
+        <member name="P:GlobeSpotterAPI.ViewerParameters.Yaw">
+            <summary>
+            Yaw-angle in degrees.
+            </summary>
+        </member>
+        <member name="P:GlobeSpotterAPI.ViewerParameters.Pitch">
+            <summary>
+            Pitch-angle in degrees.
+            </summary>
+        </member>
+        <member name="P:GlobeSpotterAPI.ViewerParameters.HFov">
+            <summary>
+            Horizontal Field of View in degrees.
+            </summary>
+        </member>
+        <member name="P:GlobeSpotterAPI.ViewerParameters.DateFrom">
+            <summary>
+            The earliest date from which to look for available panoramas as an ISO 8601 DateTime string.
+            </summary>
+        </member>
+        <member name="P:GlobeSpotterAPI.ViewerParameters.DateTo">
+            <summary>
+            The furthest date to which to look for available panoramas as an ISO 8601 DateTime string.
+            </summary>
+        </member>
         <member name="M:GlobeSpotterAPI.ViewerParameters.#ctor(System.Double,System.Double,System.Double)">
             <summary>
             Create a direction of view within usable within any Cyclorama.
@@ -3755,31 +3844,6 @@
             </summary>
             <returns>XML-string</returns>
         </member>
-        <member name="P:GlobeSpotterAPI.ViewerParameters.Yaw">
-            <summary>
-            Yaw-angle in degrees.
-            </summary>
-        </member>
-        <member name="P:GlobeSpotterAPI.ViewerParameters.Pitch">
-            <summary>
-            Pitch-angle in degrees.
-            </summary>
-        </member>
-        <member name="P:GlobeSpotterAPI.ViewerParameters.HFov">
-            <summary>
-            Horizontal Field of View in degrees.
-            </summary>
-        </member>
-        <member name="P:GlobeSpotterAPI.ViewerParameters.DateFrom">
-            <summary>
-            The earliest date from which to look for available panoramas as an ISO 8601 DateTime string.
-            </summary>
-        </member>
-        <member name="P:GlobeSpotterAPI.ViewerParameters.DateTo">
-            <summary>
-            The furthest date to which to look for available panoramas as an ISO 8601 DateTime string.
-            </summary>
-        </member>
         <member name="T:GlobeSpotterAPI.EntityData">
             <summary>
             Abstract superclass of all entities.
@@ -3809,29 +3873,6 @@
             <summary>
             Data of an entity repressenting a Line measurement.
             </summary>
-        </member>
-        <member name="M:GlobeSpotterAPI.LineMeasurementData.parseProperty(System.Xml.XmlNode,System.String)">
-            <summary>
-            Parse property data
-            </summary>
-            <param name="data">XML node with data</param>
-            <param name="property">Property name</param>
-            <returns>property data</returns>
-        </member>
-        <member name="M:GlobeSpotterAPI.LineMeasurementData.parsePropertyList(System.Xml.XmlNode,System.String)">
-            <summary>
-            Parse property data list
-            </summary>
-            <param name="data">XML node with data</param>
-            <param name="property">Property name</param>
-            <returns>list of property datas</returns>
-        </member>
-        <member name="M:GlobeSpotterAPI.LineMeasurementData.parseMeasurementPoints(System.Xml.XmlNode)">
-            <summary>
-            Parse measurement points
-            </summary>
-            <param name="data">XML node with measurement points</param>
-            <returns>List of measurement points</returns>
         </member>
         <member name="P:GlobeSpotterAPI.LineMeasurementData.measurementPoints">
             <summary>
@@ -3867,6 +3908,29 @@
             <summary>
             The slopes of the lines
             </summary>
+        </member>
+        <member name="M:GlobeSpotterAPI.LineMeasurementData.parseProperty(System.Xml.XmlNode,System.String)">
+            <summary>
+            Parse property data
+            </summary>
+            <param name="data">XML node with data</param>
+            <param name="property">Property name</param>
+            <returns>property data</returns>
+        </member>
+        <member name="M:GlobeSpotterAPI.LineMeasurementData.parsePropertyList(System.Xml.XmlNode,System.String)">
+            <summary>
+            Parse property data list
+            </summary>
+            <param name="data">XML node with data</param>
+            <param name="property">Property name</param>
+            <returns>list of property datas</returns>
+        </member>
+        <member name="M:GlobeSpotterAPI.LineMeasurementData.parseMeasurementPoints(System.Xml.XmlNode)">
+            <summary>
+            Parse measurement points
+            </summary>
+            <param name="data">XML node with measurement points</param>
+            <returns>List of measurement points</returns>
         </member>
         <member name="T:GlobeSpotterAPI.SurfaceMeasurementData">
             <summary>
@@ -4018,6 +4082,16 @@
             A 2D point.
             </summary>
         </member>
+        <member name="P:GlobeSpotterAPI.Point2D.x">
+            <summary>
+            x-coordinate
+            </summary>
+        </member>
+        <member name="P:GlobeSpotterAPI.Point2D.y">
+            <summary>
+            y-coordinate
+            </summary>
+        </member>
         <member name="M:GlobeSpotterAPI.Point2D.#ctor(System.Double,System.Double)">
             <summary>
             Constructs a 2-dimensional point.
@@ -4031,53 +4105,24 @@
             </summary>
             <returns>XML-string</returns>
         </member>
-        <member name="P:GlobeSpotterAPI.Point2D.x">
-            <summary>
-            x-coordinate
-            </summary>
-        </member>
-        <member name="P:GlobeSpotterAPI.Point2D.y">
-            <summary>
-            y-coordinate
-            </summary>
-        </member>
         <member name="T:GlobeSpotterAPI.Point3DStd">
             <summary>
             3D point with standard deviation information
             </summary>
         </member>
-        <member name="T:GlobeSpotterAPI.Point3D">
+        <member name="P:GlobeSpotterAPI.Point3DStd.Std_x">
             <summary>
-            A 3D point.
+            Standard deviation of X
             </summary>
         </member>
-        <member name="M:GlobeSpotterAPI.Point3D.#ctor(System.Double,System.Double,System.Double)">
+        <member name="P:GlobeSpotterAPI.Point3DStd.Std_y">
             <summary>
-            Constructs a 3-dimensional point.
-            </summary>
-            <param name="x">x-coord</param>
-            <param name="y">y-coord</param>
-            <param name="z">z-coord</param>
-        </member>
-        <member name="M:GlobeSpotterAPI.Point3D.ToXMLString">
-            <summary>
-            Creates an XML-repressentation of this object.
-            </summary>
-            <returns>XML-string</returns>
-        </member>
-        <member name="P:GlobeSpotterAPI.Point3D.x">
-            <summary>
-            x-coordinate
+            Standard deviation of Y
             </summary>
         </member>
-        <member name="P:GlobeSpotterAPI.Point3D.y">
+        <member name="P:GlobeSpotterAPI.Point3DStd.Std_z">
             <summary>
-            y-coordinate
-            </summary>
-        </member>
-        <member name="P:GlobeSpotterAPI.Point3D.z">
-            <summary>
-            z-coordinate
+            Standard deviation of Z
             </summary>
         </member>
         <member name="M:GlobeSpotterAPI.Point3DStd.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
@@ -4105,58 +4150,24 @@
             Update x,z,y values with Point3D values
             </summary>
         </member>
-        <member name="P:GlobeSpotterAPI.Point3DStd.Std_x">
-            <summary>
-            Standard deviation of X
-            </summary>
-        </member>
-        <member name="P:GlobeSpotterAPI.Point3DStd.Std_y">
-            <summary>
-            Standard deviation of Y
-            </summary>
-        </member>
-        <member name="P:GlobeSpotterAPI.Point3DStd.Std_z">
-            <summary>
-            Standard deviation of Z
-            </summary>
-        </member>
         <member name="T:GlobeSpotterAPI.DirectionObservation">
             <summary>
             a observatioin point with a direction
             </summary>
         </member>
-        <member name="T:GlobeSpotterAPI.PointObservation">
+        <member name="P:GlobeSpotterAPI.DirectionObservation.Dir_x">
             <summary>
-            A point observation.
+            X direction
             </summary>
         </member>
-        <member name="M:GlobeSpotterAPI.PointObservation.#ctor(System.Double,System.Double,System.Double)">
+        <member name="P:GlobeSpotterAPI.DirectionObservation.Dir_y">
             <summary>
-            Constructs a 3-dimensional observation point.
-            </summary>
-            <param name="x">x-coord</param>
-            <param name="y">y-coord</param>
-            <param name="z">z-coord</param>
-        </member>
-        <member name="M:GlobeSpotterAPI.PointObservation.ToXMLString">
-            <summary>
-            Creates an XML-repressentation of this object.
-            </summary>
-            <returns>XML-string</returns>
-        </member>
-        <member name="P:GlobeSpotterAPI.PointObservation.x">
-            <summary>
-            x-coordinate
+            Y direction
             </summary>
         </member>
-        <member name="P:GlobeSpotterAPI.PointObservation.y">
+        <member name="P:GlobeSpotterAPI.DirectionObservation.Dir_z">
             <summary>
-            y-coordinate
-            </summary>
-        </member>
-        <member name="P:GlobeSpotterAPI.PointObservation.z">
-            <summary>
-            z-coordinate
+            Z direction
             </summary>
         </member>
         <member name="M:GlobeSpotterAPI.DirectionObservation.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
@@ -4184,24 +4195,82 @@
             Update x,z,y values with Point3D values
             </summary>
         </member>
-        <member name="P:GlobeSpotterAPI.DirectionObservation.Dir_x">
+        <member name="T:GlobeSpotterAPI.PointObservation">
             <summary>
-            X direction
+            A point observation.
             </summary>
         </member>
-        <member name="P:GlobeSpotterAPI.DirectionObservation.Dir_y">
+        <member name="P:GlobeSpotterAPI.PointObservation.x">
             <summary>
-            Y direction
+            x-coordinate
             </summary>
         </member>
-        <member name="P:GlobeSpotterAPI.DirectionObservation.Dir_z">
+        <member name="P:GlobeSpotterAPI.PointObservation.y">
             <summary>
-            Z direction
+            y-coordinate
             </summary>
+        </member>
+        <member name="P:GlobeSpotterAPI.PointObservation.z">
+            <summary>
+            z-coordinate
+            </summary>
+        </member>
+        <member name="M:GlobeSpotterAPI.PointObservation.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+            Constructs a 3-dimensional observation point.
+            </summary>
+            <param name="x">x-coord</param>
+            <param name="y">y-coord</param>
+            <param name="z">z-coord</param>
+        </member>
+        <member name="M:GlobeSpotterAPI.PointObservation.ToXMLString">
+            <summary>
+            Creates an XML-repressentation of this object.
+            </summary>
+            <returns>XML-string</returns>
+        </member>
+        <member name="T:GlobeSpotterAPI.Point3D">
+            <summary>
+            A 3D point.
+            </summary>
+        </member>
+        <member name="P:GlobeSpotterAPI.Point3D.x">
+            <summary>
+            x-coordinate
+            </summary>
+        </member>
+        <member name="P:GlobeSpotterAPI.Point3D.y">
+            <summary>
+            y-coordinate
+            </summary>
+        </member>
+        <member name="P:GlobeSpotterAPI.Point3D.z">
+            <summary>
+            z-coordinate
+            </summary>
+        </member>
+        <member name="M:GlobeSpotterAPI.Point3D.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+            Constructs a 3-dimensional point.
+            </summary>
+            <param name="x">x-coord</param>
+            <param name="y">y-coord</param>
+            <param name="z">z-coord</param>
+        </member>
+        <member name="M:GlobeSpotterAPI.Point3D.ToXMLString">
+            <summary>
+            Creates an XML-repressentation of this object.
+            </summary>
+            <returns>XML-string</returns>
         </member>
         <member name="T:GlobeSpotterAPI.MeasurementObservation">
             <summary>
             Measurement Observation
+            </summary>
+        </member>
+        <member name="P:GlobeSpotterAPI.MeasurementObservation.imageId">
+            <summary>
+            the imageId of the observation
             </summary>
         </member>
         <member name="M:GlobeSpotterAPI.MeasurementObservation.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.String)">
@@ -4212,11 +4281,6 @@
         <member name="M:GlobeSpotterAPI.MeasurementObservation.#ctor(GlobeSpotterAPI.PointObservation,GlobeSpotterAPI.DirectionObservation,System.String)">
             <summary>
             Construct MeasurementObservation
-            </summary>
-        </member>
-        <member name="P:GlobeSpotterAPI.MeasurementObservation.imageId">
-            <summary>
-            the imageId of the observation
             </summary>
         </member>
         <member name="T:GlobeSpotterAPI.MeasurementObservationArray">
@@ -4245,16 +4309,6 @@
             Measurement Point
             </summary>
         </member>
-        <member name="M:GlobeSpotterAPI.MeasurementPoint.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Boolean,System.Boolean,GlobeSpotterAPI.MeasurementObservationArray)">
-            <summary>
-            Construct MeasurementPoint 
-            </summary>
-        </member>
-        <member name="M:GlobeSpotterAPI.MeasurementPoint.#ctor(GlobeSpotterAPI.Point3D,GlobeSpotterAPI.Point3DStd,System.Boolean,System.Boolean,GlobeSpotterAPI.MeasurementObservationArray)">
-            <summary>
-            Construct MeasurementPoint 
-            </summary>
-        </member>
         <member name="P:GlobeSpotterAPI.MeasurementPoint.validEstimate">
             <summary>
             Indicates if the point is a valid estimate.
@@ -4270,21 +4324,66 @@
             The observation objects
             </summary>
         </member>
-        <member name="T:GlobeSpotterAPI.OSMLayer">
+        <member name="M:GlobeSpotterAPI.MeasurementPoint.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Boolean,System.Boolean,GlobeSpotterAPI.MeasurementObservationArray)">
             <summary>
-            OSMLayer
+            Construct MeasurementPoint 
             </summary>
         </member>
-        <member name="M:GlobeSpotterAPI.OSMLayer.#ctor(System.String,GlobeSpotterAPI.MapExtent,System.Double,System.Int32,System.Int32)">
+        <member name="M:GlobeSpotterAPI.MeasurementPoint.#ctor(GlobeSpotterAPI.Point3D,GlobeSpotterAPI.Point3DStd,System.Boolean,System.Boolean,GlobeSpotterAPI.MeasurementObservationArray)">
+            <summary>
+            Construct MeasurementPoint 
+            </summary>
+        </member>
+        <member name="T:GlobeSpotterAPI.TMSLayer">
+            <summary>
+            TMSLayer
+            </summary>
+        </member>
+        <member name="P:GlobeSpotterAPI.TMSLayer.url">
+            <summary>
+            base url of osm tiles
+            </summary>
+        </member>
+        <member name="P:GlobeSpotterAPI.TMSLayer.maxExtent">
+            <summary>
+            map extent
+            </summary>
+        </member>
+        <member name="P:GlobeSpotterAPI.TMSLayer.maxResolution">
+            <summary>
+            max resolution
+            </summary>
+        </member>
+        <member name="P:GlobeSpotterAPI.TMSLayer.maxZoomLevel">
+            <summary>
+            max zoomlevel
+            </summary>
+        </member>
+        <member name="P:GlobeSpotterAPI.TMSLayer.featureZoomLevel">
+            <summary>
+            feature zoomlevel
+            </summary>
+        </member>
+        <member name="P:GlobeSpotterAPI.TMSLayer.tileOrder">
+            <summary>
+            tileOrder 1 = LB 2 = LT
+            </summary>
+        </member>
+        <member name="M:GlobeSpotterAPI.TMSLayer.#ctor(System.String,GlobeSpotterAPI.MapExtent,System.Double,System.Int32,System.Int32,System.Int32)">
             <summary>
             constructor
             </summary>
         </member>
-        <member name="M:GlobeSpotterAPI.OSMLayer.ToXMLString">
+        <member name="M:GlobeSpotterAPI.TMSLayer.ToXMLString">
             <summary>
             Creates an XML-repressentation of this object.
             </summary>
             <returns>XML-string</returns>
+        </member>
+        <member name="T:GlobeSpotterAPI.OSMLayer">
+            <summary>
+            OSMLayer
+            </summary>
         </member>
         <member name="P:GlobeSpotterAPI.OSMLayer.url">
             <summary>
@@ -4311,16 +4410,21 @@
             feature zoomlevel
             </summary>
         </member>
-        <member name="T:GlobeSpotterAPI.WMSLayer">
+        <member name="M:GlobeSpotterAPI.OSMLayer.#ctor(System.String,GlobeSpotterAPI.MapExtent,System.Double,System.Int32,System.Int32)">
             <summary>
-            WMS layer
+            constructor
             </summary>
         </member>
-        <member name="M:GlobeSpotterAPI.WMSLayer.ToXMLString">
+        <member name="M:GlobeSpotterAPI.OSMLayer.ToXMLString">
             <summary>
             Creates an XML-repressentation of this object.
             </summary>
             <returns>XML-string</returns>
+        </member>
+        <member name="T:GlobeSpotterAPI.WMSLayer">
+            <summary>
+            WMS layer
+            </summary>
         </member>
         <member name="P:GlobeSpotterAPI.WMSLayer.url">
             <summary>
@@ -4371,6 +4475,12 @@
             <summary>
             feature zoomlevel
             </summary>
+        </member>
+        <member name="M:GlobeSpotterAPI.WMSLayer.ToXMLString">
+            <summary>
+            Creates an XML-repressentation of this object.
+            </summary>
+            <returns>XML-string</returns>
         </member>
         <member name="T:GlobeSpotterAPI.InitType">
             <summary>

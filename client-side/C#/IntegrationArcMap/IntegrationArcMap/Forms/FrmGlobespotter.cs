@@ -926,6 +926,11 @@ namespace IntegrationArcMap.Forms
       // empty
     }
 
+    public void OnImageDistanceSliderChanged(uint viewerId, double value)
+    {
+      // empty
+    }
+
     public void OnViewerActive(uint viewerId)
     {
       MoveToLocation(viewerId);
@@ -1155,8 +1160,12 @@ namespace IntegrationArcMap.Forms
               CultureInfo ci = CultureInfo.InvariantCulture;
               var point3D = new Point3D(Double.Parse(split[0], ci), Double.Parse(split[1], ci),
                                         Double.Parse(split[2], ci));
-              uint viewerId = _api.GetActiveViewer();
-              OnShowLocationRequested(viewerId, point3D);
+              int viewerId = _api.GetActiveViewer();
+
+              if (viewerId >= 0)
+              {
+                OnShowLocationRequested((uint) viewerId, point3D);
+              }
             }
           }
         }
@@ -1173,6 +1182,11 @@ namespace IntegrationArcMap.Forms
       // empty
     }
 
+    public void OnOpenNearestImageResult(string imput, bool opened, string imageId, Point3D point)
+    {
+      // empty
+    }
+
     public void OnFeatureClicked(Dictionary<string, string> featureData)
     {
       FrmIdentify.Show(featureData);
@@ -1184,6 +1198,11 @@ namespace IntegrationArcMap.Forms
     }
 
     public void OnMapInitialized()
+    {
+      // empty
+    }
+
+    public void OnMaxViewers()
     {
       // empty
     }

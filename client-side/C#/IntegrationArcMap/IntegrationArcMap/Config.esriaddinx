@@ -3,13 +3,13 @@
   <Name>GlobeSpotter for ArcGIS Desktop</Name>
   <AddInID>{601756f1-d4d0-4279-abad-47338704585c}</AddInID>
   <Description>GlobeSpotter for ArcGIS Desktop
-Copyright © CycloMedia Technology 2014 - 2016
+Copyright © CycloMedia Technology 2014 - 2017
   </Description>
-  <Version>1.2.18</Version>
+  <Version>1.3.0</Version>
   <Image>Images\GsIntegrationArcMap.png</Image>
   <Author>CycloMedia</Author>
   <Company>CycloMedia</Company>
-  <Date>04/15/2016</Date>
+  <Date>08/22/2017</Date>
   <Targets>
     <Target name="Desktop"
             version="10.0" />
@@ -26,7 +26,7 @@ Copyright © CycloMedia Technology 2014 - 2016
                    autoLoad="true">
           <Description>
             GlobeSpotter for ArcGIS Desktop
-            Copyright © CycloMedia Technology 2014 - 2016
+            Copyright © CycloMedia Technology 2014 - 2017
             This extension contains the GlobeSpotter for ArcGIS Desktop.
           </Description>
         </Extension>
